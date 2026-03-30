@@ -1,10 +1,12 @@
 # app/main.py
 from fastapi import FastAPI
 from app.database import Base, engine
-from app.routers import auth, task
+from app.routers import auth, task, user
 from fastapi.middleware.cors import CORSMiddleware
 from dotenv import load_dotenv
 import os
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 # .env を読み込む（Renderでは不要だが、ローカル用に残す）
 load_dotenv()
@@ -37,8 +39,16 @@ def on_startup():
 # ルーターの登録
 app.include_router(auth.router)
 app.include_router(task.router)
+app.include_router(user.router)
 
 @app.get("/")
 def read_root():
     return {"message": "Hello, Todo App!"}
 
+# 静的ファイルのマウント
+app.mount("/static", StaticFiles(directory="app/static"), name="static")
+
+# favicon.ico のルートを追加
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    return FileResponse("app/static/favicon.ico")

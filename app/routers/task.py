@@ -39,8 +39,16 @@ def update_status(task_id: int, data: TaskStatusUpdate, db: Session = Depends(ge
         raise HTTPException(status_code=404, detail="Task not found")
     return task
 
+#@router.post("/{task_id}/toggle", response_model=TaskResponse)
+#def toggle_status(task_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    #task = toggle_task_status(db, task_id, user_id)
+    #if not task:
+        #raise HTTPException(status_code=404, detail="Task not found")
+    #return task
+
 @router.post("/{task_id}/toggle", response_model=TaskResponse)
 def toggle_status(task_id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)):
+    print(f"toggle_status called with task_id={task_id}, user_id={user_id}")
     task = toggle_task_status(db, task_id, user_id)
     if not task:
         raise HTTPException(status_code=404, detail="Task not found")

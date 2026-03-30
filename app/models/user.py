@@ -1,7 +1,6 @@
-# app/models/user.py
-
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
+from sqlalchemy.orm import relationship
 from app.database import Base
 
 class User(Base):
@@ -12,3 +11,9 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     created_at = Column(DateTime(timezone=True), server_default=func.now())
 
+    # タスクとのリレーションを追加（削除時にタスクも削除されるように）
+    tasks = relationship(
+        "Task",
+        back_populates="owner",
+        cascade="all, delete-orphan"
+    )
